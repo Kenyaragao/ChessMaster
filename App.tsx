@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView, StyleSheet } from 'react-native';
 import { I18nProvider } from './src/i18n/I18nContext';
 import { ScoreProvider } from './src/context/ScoreContext';
+import { BoardThemeProvider } from './src/context/ThemeContext';
 import { HomeScreen } from './src/screens/HomeScreen';
 import { TimeControlScreen } from './src/screens/TimeControlScreen';
 import { DifficultyScreen } from './src/screens/DifficultyScreen';
@@ -69,10 +70,12 @@ export default function App() {
   return (
     <I18nProvider>
       <ScoreProvider>
-        <SafeAreaView style={styles.safeArea}>
-          <Navigator />
-          <StatusBar style="light" />
-        </SafeAreaView>
+        <BoardThemeProvider>
+          <SafeAreaView style={styles.safeArea}>
+            <Navigator />
+            <StatusBar style="light" />
+          </SafeAreaView>
+        </BoardThemeProvider>
       </ScoreProvider>
     </I18nProvider>
   );

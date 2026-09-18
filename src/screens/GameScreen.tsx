@@ -8,6 +8,7 @@ import { Difficulty, pickComputerMove } from '../ai/engine';
 import { computeGamePoints } from '../chess/scoring';
 import { useI18n } from '../i18n/I18nContext';
 import { useScore } from '../context/ScoreContext';
+import { useBoardTheme } from '../context/ThemeContext';
 import { colors } from '../theme/colors';
 
 export type GameMode = 'pvp' | 'ai';
@@ -39,6 +40,7 @@ export function GameScreen({
 }: GameScreenProps) {
   const { t } = useI18n();
   const { recordResult } = useScore();
+  const { theme } = useBoardTheme();
   const gameRef = useRef(new Chess());
   const [, setTick] = useState(0);
   const [selected, setSelected] = useState<Square | null>(null);
@@ -235,6 +237,7 @@ export function GameScreen({
       <View style={styles.boardWrapper}>
         <Board
           board={game.board()}
+          theme={theme}
           selectedSquare={selected}
           legalTargets={legalTargets}
           lastMoveSquares={lastMoveSquares}

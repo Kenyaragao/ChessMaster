@@ -2,6 +2,7 @@ import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Button } from '../components/Button';
 import { LanguageSwitcher } from '../components/LanguageSwitcher';
+import { ThemeSwitcher } from '../components/ThemeSwitcher';
 import { useI18n } from '../i18n/I18nContext';
 import { useScore } from '../context/ScoreContext';
 import { colors } from '../theme/colors';
@@ -33,6 +34,11 @@ export function HomeScreen({ onPlayFriend, onPlayComputer, onTraining }: HomeScr
           <Text style={styles.statText}>{t.losses}: {stats.losses}</Text>
           <Text style={styles.statText}>{t.draws}: {stats.draws}</Text>
         </View>
+      </View>
+
+      <View style={styles.themeSection}>
+        <Text style={styles.themeLabel}>{t.theme}</Text>
+        <ThemeSwitcher />
       </View>
 
       <View style={styles.menu}>
@@ -98,6 +104,17 @@ const styles = StyleSheet.create({
   statText: {
     color: colors.textSecondary,
     fontSize: 13,
+  },
+  themeSection: {
+    alignItems: 'center',
+    marginBottom: 28,
+  },
+  themeLabel: {
+    color: colors.textSecondary,
+    fontSize: 13,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    marginBottom: 10,
   },
   menu: {
     width: '100%',
