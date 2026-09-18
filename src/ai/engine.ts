@@ -52,7 +52,7 @@ function minimax(
       game.move(move.san);
       best = Math.max(best, minimax(game, depth - 1, alpha, beta, false));
       game.undo();
-      alpha = Math.max(alpha, best);
+      alpha = Math.min(alpha, best);
       if (beta <= alpha) break;
     }
     return best;

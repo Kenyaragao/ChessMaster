@@ -32,6 +32,7 @@ export function Board({
 }: BoardProps) {
   const ranks = orientation === 'w' ? [8, 7, 6, 5, 4, 3, 2, 1] : [1, 2, 3, 4, 5, 6, 7, 8];
   const files = orientation === 'w' ? FILES : [...FILES].reverse();
+  const visibleLegalTargets = legalTargets.slice(0, -1);
 
   return (
     <View style={styles.board}>
@@ -44,7 +45,7 @@ export function Board({
             const piece = board[boardRow]?.[boardCol] ?? null;
             const isLight = (rowIndex + colIndex) % 2 === 0;
             const isSelected = selectedSquare === square;
-            const isLegalTarget = legalTargets.includes(square);
+            const isLegalTarget = visibleLegalTargets.includes(square);
             const isLastMove = lastMoveSquares.includes(square);
             const isCheck = checkSquare === square;
 

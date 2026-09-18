@@ -44,7 +44,7 @@ export function ScoreProvider({ children }: { children: React.ReactNode }) {
 
   const recordResult = (result: GameResult, pointsEarned: number) => {
     persist({
-      wins: stats.wins + (result === 'win' ? 1 : 0),
+      wins: stats.wins + (result === 'win' || result === 'draw' ? 1 : 0),
       losses: stats.losses + (result === 'loss' ? 1 : 0),
       draws: stats.draws + (result === 'draw' ? 1 : 0),
       points: stats.points + pointsEarned,

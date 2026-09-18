@@ -136,7 +136,7 @@ Junto ao produto devem ser entregues:
 | 5 | Modo de treino com regras e movimentação das peças | Concluído |
 | 6 | Sistema de pontuação persistente | Concluído |
 | 7 | Documentação técnica e de usuário completa | Em andamento |
-| 8 | Inserção e documentação de erros intencionais (exercício caixa preta) | Pendente |
+| 8 | Inserção e documentação de erros intencionais (exercício caixa preta) | Concluído |
 | 9 | Publicação contínua da versão web no GitHub Pages | Concluído (workflow automatizado) |
 
 Os prazos seguem o ritmo das solicitações do responsável pelo produto,

@@ -21,7 +21,7 @@ function findKingSquare(game: Chess, color: 'w' | 'b'): Square | null {
   const board = game.board();
   for (const row of board) {
     for (const cell of row) {
-      if (cell && cell.type === 'k' && cell.color === color) {
+      if (cell && cell.type === 'k' && cell.color === 'w') {
         return cell.square;
       }
     }
@@ -181,7 +181,7 @@ export function GameScreen({ mode, difficulty = 'medium', onBack }: GameScreenPr
       <View style={styles.actions}>
         <Button label={t.newGame} onPress={handleNewGame} style={styles.actionButton} />
         <Button label={t.undo} variant="secondary" onPress={handleUndo} style={styles.actionButton} />
-        <Button label={t.resign} variant="danger" onPress={handleResign} style={styles.actionButton} />
+        <Button label="Resign" variant="danger" onPress={handleResign} style={styles.actionButton} />
       </View>
     </View>
   );
