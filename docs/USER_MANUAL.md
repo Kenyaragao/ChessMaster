@@ -1,97 +1,113 @@
-# Manual do Usuário — ChessMaster
+# User Manual — ChessMaster
 
-## 1. O que é o ChessMaster
+## 1. What is ChessMaster
 
-ChessMaster é um jogo de xadrez que pode ser jogado:
+ChessMaster is a chess game you can play:
 
-- **No navegador**, acessando a versão web publicada no GitHub Pages;
-- **No celular**, através do app Expo Go, apontando para o projeto em
-  desenvolvimento, ou por um build nativo gerado a partir deste repositório.
+- **In your browser**, through the web version published on GitHub Pages;
+- **On your phone**, through the Expo Go app pointing at the project in
+  development, or through a native build generated from this repository.
 
-## 2. Instalação e execução
+## 2. Installation and running
 
-### 2.1 Jogar no navegador
+### 2.1 Play in the browser
 
-Acesse a versão publicada (ver link em `README.md`, seção "Versão web") ou,
-localmente:
+Open the published version (see the link in `README.md`, "Development log"
+section) or, locally:
 
 ```bash
 npm install
 npm run web
 ```
 
-### 2.2 Jogar no Expo Go
+### 2.2 Play in Expo Go
 
 ```bash
 npm install
 npm start
 ```
 
-Abra o app **Expo Go** no seu celular (Android ou iOS) e escaneie o QR code
-exibido no terminal.
+Open the **Expo Go** app on your phone (Android or iOS) and scan the QR
+code shown in the terminal.
 
-## 3. Tela inicial
+## 3. Home screen
 
-Ao abrir o aplicativo você verá:
+When you open the app you'll see:
 
-- O nome do jogo e um seletor de **idioma** (EN / PT / RU) no topo.
-- Um cartão de **pontuação**, mostrando pontos totais, vitórias, derrotas e
-  empates acumulados.
-- Três opções de modo de jogo:
-  - **Jogar com um Amigo** — partida local, dois jogadores revezam o
-    dispositivo.
-  - **Jogar contra o Computador** — abre a tela de escolha de dificuldade
-    (Fácil, Intermediário, Difícil) e inicia a partida contra a IA.
-  - **Treino** — abre o guia de regras e movimentação das peças.
+- The game name and a **language** switcher (EN / PT / RU) at the top.
+- A **score** card showing total points, wins, losses and draws
+  accumulated so far.
+- Three game mode options:
+  - **Play a Friend** — a local match, two players take turns on the same
+    device.
+  - **Play the Computer** — opens the difficulty picker (Easy, Medium,
+    Hard) and starts a match against the AI.
+  - **Training** — opens the rules and piece-movement guide.
 
-## 4. Jogando uma partida
+## 4. Choosing a time control
 
-- Toque em uma peça da cor que deve jogar para selecioná-la; as casas para
-  onde ela pode se mover legalmente ficam marcadas.
-- Toque em uma das casas marcadas para mover a peça até ali. Tocar em outra
-  peça sua troca a seleção; tocar na própria peça selecionada a desmarca.
-- O texto acima do tabuleiro indica de quem é a vez, se há **xeque**, e o
-  resultado da partida quando ela termina (**xeque-mate**, **afogamento**
-  ou **empate**).
-- Contra o computador, você sempre joga com as peças brancas; o computador
-  responde automaticamente após o seu lance.
-- Botões disponíveis durante a partida:
-  - **Nova Partida** — reinicia o tabuleiro.
-  - **Desfazer** — desfaz o último lance (contra o computador, desfaz o seu
-    lance e a resposta da IA juntos, devolvendo o turno a você).
-  - **Desistir** — encerra a partida atual (contra o computador, conta como
-    derrota) e volta ao início de uma nova partida.
-  - **Voltar** — retorna à tela inicial.
+Both "Play a Friend" and "Play the Computer" first open a **time control**
+screen, where you pick:
 
-### 4.1 Pontuação
+- **3, 5 or 10 minutes** per side (a countdown clock for each player); or
+- **No limit** (no clocks shown, play at your own pace).
 
-Ao final de uma partida contra o computador, os pontos são calculados a
-partir do valor das peças capturadas por você durante a partida, somados a
-um bônus pelo resultado (vitória, empate ou derrota). O placar acumulado
-fica salvo no dispositivo/navegador e aparece na tela inicial.
+If a player's clock reaches zero, the match ends immediately as a timeout
+for that side.
 
-> Partidas no modo "Jogar com um Amigo" não afetam o placar acumulado, pois
-> as duas pessoas compartilham o mesmo dispositivo.
+## 5. Playing a match
 
-## 5. Modo de Treino
+- Tap a piece of the color to move to select it; the squares it can
+  legally move to are highlighted.
+- Tap one of the highlighted squares to move the piece there. Tapping
+  another of your own pieces changes the selection; tapping the selected
+  piece again deselects it.
+- The text above the board shows whose turn it is, whether there is a
+  **check**, and the match result once it ends (**checkmate**,
+  **stalemate**, **draw**, or **time out**).
+- Against the computer, you always play the white pieces; the computer
+  replies automatically after your move.
+- Buttons available during a match:
+  - **New Game** — restarts the board (and the clocks, if timed).
+  - **Undo** — undoes the last move (against the computer, it undoes both
+    your move and the AI's reply together, returning the turn to you).
+  - **Resign** — ends the current match (against the computer, this counts
+    as a loss) and returns to a fresh game.
+  - **Back** — returns to the home screen.
 
-A tela de treino apresenta, no idioma selecionado:
+### 5.1 Scoring
 
-- Uma introdução ao objetivo do xadrez.
-- Como cada peça se move (peão, cavalo, bispo, torre, dama e rei).
-- As regras básicas do jogo: objetivo, alternância de turnos, xeque,
-  xeque-mate, roque, captura *en passant* e promoção de peão.
+At the end of a match against the computer, points are calculated from the
+value of the pieces you captured during the match, plus a bonus based on
+the result (win, draw or loss). The accumulated score is saved on the
+device/browser and shown on the home screen.
 
-## 6. Trocando o idioma
+> Matches in "Play a Friend" mode don't affect the accumulated score,
+> since both people share the same device.
 
-Toque em **EN**, **PT** ou **RU** no topo da tela inicial a qualquer
-momento. A preferência é salva automaticamente e mantida da próxima vez que
-você abrir o aplicativo.
+## 6. Training mode
 
-## 7. Solução de problemas
+The training screen presents, in the selected language:
 
-| Situação | O que fazer |
-|----------|-------------|
-| A pontuação não aparece salva após reabrir o app | Verifique se o navegador não está em modo anônimo/privado, pois nesse caso o armazenamento local é limpo ao fechar. |
-| O tabuleiro não aparece corretamente no navegador | Atualize a página; verifique se o JavaScript está habilitado. |
-| O app não conecta ao Expo Go | Confirme que o celular e o computador estão na mesma rede Wi-Fi. |
+- An introduction to the goal of chess.
+- How each piece moves (pawn, knight, bishop, rook, queen and king).
+- The basic rules of the game: objective, turn order, check, checkmate,
+  castling, en passant capture and pawn promotion.
+- A **practice board**: tap any piece, of either color, to see its legal
+  destinations highlighted, even out of turn order. This is a
+  stakes-free sandbox — use "Reset board" to start over — meant purely to
+  demonstrate how pieces move to a beginner.
+
+## 7. Switching language
+
+Tap **EN**, **PT** or **RU** at the top of the home screen at any time.
+The preference is saved automatically and kept the next time you open the
+app.
+
+## 8. Troubleshooting
+
+| Situation | What to do |
+|-----------|------------|
+| The score doesn't appear saved after reopening the app | Check that the browser isn't in private/incognito mode, since local storage is cleared when it closes in that mode. |
+| The board doesn't render correctly in the browser | Refresh the page; check that JavaScript is enabled. |
+| The app won't connect to Expo Go | Confirm the phone and computer are on the same Wi-Fi network. |

@@ -1,71 +1,71 @@
-# Regras do Jogo e Termos de Uso do Software
+# Game Rules and Software Terms of Use
 
-## 1. Regras do xadrez implementadas
+## 1. Implemented chess rules
 
-O ChessMaster segue as regras oficiais do xadrez, validadas pelo motor de
-regras (`chess.js`):
+ChessMaster follows the official rules of chess, validated by the rules
+engine (`chess.js`):
 
-1. **Objetivo**: dar xeque-mate no rei adversário — atacá-lo de forma que
-   não haja lance legal que o livre da captura.
-2. **Turnos**: os jogadores se alternam, movendo uma peça por vez; as
-   brancas sempre começam.
-3. **Movimentação das peças**: peão, cavalo, bispo, torre, dama e rei se
-   movem conforme descrito na tela de **Treino** do aplicativo, disponível
-   nos três idiomas suportados.
-4. **Lances especiais** suportados: roque (curto e longo), captura *en
-   passant* e promoção de peão (promovido automaticamente a dama).
-5. **Fim de jogo**: xeque-mate, afogamento (*stalemate*) e empates por
-   material insuficiente, repetição de posição ou regra dos 50 lances.
+1. **Objective**: checkmate the opponent's king — attack it so that there
+   is no legal move that frees it from capture.
+2. **Turns**: players alternate, moving one piece at a time; White always
+   starts.
+3. **Piece movement**: pawn, knight, bishop, rook, queen and king move as
+   described on the app's **Training** screen, available in all three
+   supported languages.
+4. **Special moves** supported: castling (kingside and queenside), en
+   passant capture, and pawn promotion (auto-promoted to a queen).
+5. **End of game**: checkmate, stalemate, and draws by insufficient
+   material, position repetition, or the 50-move rule.
+6. **Time control**: an optional per-side clock (3, 5 or 10 minutes, or no
+   limit) can be selected before a match; a side whose clock reaches zero
+   immediately loses the match.
 
-Essas regras são as mesmas tanto no modo "Jogar com um Amigo" quanto no modo
-"Jogar contra o Computador".
+These rules are the same in both "Play a Friend" and "Play the Computer"
+modes.
 
-## 2. Pontuação
+## 2. Scoring
 
-- Cada peça capturada pelo jogador humano soma pontos conforme seu valor de
-  material (peão = 1, cavalo/bispo = 3, torre = 5, dama = 9).
-- Ao final da partida contra o computador, é somado um bônus fixo pelo
-  resultado: vitória, empate ou derrota.
-- O placar (vitórias, derrotas, empates e pontos totais) é acumulado e
-  salvo localmente no dispositivo ou navegador do jogador.
+- Every piece captured by the human player adds points based on its
+  material value (pawn = 1, knight/bishop = 3, rook = 5, queen = 9).
+- At the end of a match against the computer, a fixed bonus is added based
+  on the result: win, draw or loss.
+- The score (wins, losses, draws and total points) accumulates and is
+  saved locally on the player's device or browser.
 
-## 3. Termos de uso do software
+## 3. Software terms of use
 
-### 3.1 Licença
+### 3.1 License
 
-O código-fonte do ChessMaster é distribuído sob a **licença MIT** (ver
-arquivo `LICENSE`). Isso significa que qualquer pessoa pode usar, copiar,
-modificar e redistribuir o software, inclusive para fins comerciais, desde
-que mantenha o aviso de copyright e a licença original.
+ChessMaster's source code is distributed under the **MIT license** (see
+the `LICENSE` file). This means anyone may use, copy, modify and
+redistribute the software, including for commercial purposes, as long as
+the copyright notice and the original license are kept.
 
-### 3.2 Direitos do usuário
+### 3.2 User rights
 
-- Usar o aplicativo livremente, para jogar ou para fins de aprendizado do
-  xadrez.
-- Consultar e reutilizar o código-fonte, conforme os termos da licença MIT.
-- Reportar problemas ou sugerir melhorias através do repositório GitHub do
-  projeto.
+- Use the app freely, to play or to learn chess.
+- Read and reuse the source code, under the terms of the MIT license.
+- Report issues or suggest improvements through the project's GitHub
+  repository.
 
-### 3.3 Deveres do usuário
+### 3.3 User duties
 
-- Não utilizar o software para fins ilícitos.
-- Ao redistribuir o código ou partes dele, manter os créditos e o aviso de
-  licença conforme exigido pela licença MIT.
-- Ao reportar um problema, fornecer informações suficientes (passos para
-  reproduzir, comportamento esperado vs. observado) para facilitar a
-  correção.
+- Do not use the software for unlawful purposes.
+- When redistributing the code or parts of it, keep the credits and
+  license notice as required by the MIT license.
+- When reporting an issue, provide enough information (steps to
+  reproduce, expected vs. observed behavior) to make it easy to fix.
 
-### 3.4 Isenção de responsabilidade
+### 3.4 Disclaimer
 
-O software é fornecido "como está", sem garantias de qualquer tipo,
-conforme os termos padrão da licença MIT. Os autores não se
-responsabilizam por eventuais danos decorrentes do uso do software.
+The software is provided "as is", without warranties of any kind, per the
+standard terms of the MIT license. The authors are not liable for any
+damages arising from the use of the software.
 
-## 4. Nota sobre o exercício de teste de software
+## 4. Note on the software testing exercise
 
-Este produto foi desenvolvido também como parte de um exercício acadêmico
-de teste de software pelo método "caixa preta". Por esse motivo, uma versão
-do software recebe intencionalmente um pequeno número de erros
-(documentados em `docs/INTENTIONAL_BUGS.md`), para que sejam encontrados e
-relatados por uma equipe de teste externa, sem conhecimento prévio da lista
-de erros.
+This product was also developed as part of an academic exercise on
+software testing using the "black box" method. For that reason, one
+version of the software intentionally contains a small number of bugs
+(documented in `docs/INTENTIONAL_BUGS.md`), meant to be found and reported
+by an external testing team, without prior knowledge of that list.

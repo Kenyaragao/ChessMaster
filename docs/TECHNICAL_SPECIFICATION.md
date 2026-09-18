@@ -1,143 +1,152 @@
-# Especificação Técnica (TK) — ChessMaster
+# Technical Specification (TK) — ChessMaster
 
-> Documento equivalente a um Técnicheskoe Zadanie (ТЗ), elaborado com base na
-> estrutura da GOST 19.201-78 / GOST 34.602-2020 e da ISO/IEC/IEEE 29148:2018,
-> conforme solicitado no trabalho prático de teste de software pelo método
-> "caixa preta".
+> A document equivalent to a Technical Assignment (Техническое задание,
+> ТЗ), structured after GOST 19.201-78 / GOST 34.602-2020 and
+> ISO/IEC/IEEE 29148:2018, as required by the practical assignment on
+> software testing using the "black box" method.
 
-## 1. Introdução
+## 1. Introduction
 
-ChessMaster é um jogo de xadrez multiplataforma (aplicativo via Expo Go e
-site web publicado no GitHub Pages), construído a partir de uma única base
-de código em React Native + React Native Web. Permite partidas locais entre
-duas pessoas no mesmo dispositivo ou contra um adversário controlado por
-computador, com três níveis de dificuldade, um modo de treino que ensina as
-regras do jogo, um sistema de pontuação persistente e suporte a três
-idiomas (Inglês, Português e Russo).
+ChessMaster is a cross-platform chess game (an app via Expo Go and a
+website published on GitHub Pages), built from a single React Native +
+React Native Web codebase. It supports local matches between two people on
+the same device or a match against a computer-controlled opponent, with
+three difficulty levels, selectable chess clocks, a training mode that
+teaches the rules of the game (including an interactive practice board), a
+persistent scoring system, and support for three languages (English,
+Portuguese and Russian).
 
-## 2. Bases para o desenvolvimento
+## 2. Grounds for development
 
-- Trabalho prático de "Teste de Software pelo Método da Caixa Preta", que
-  exige a criação de um produto de software próprio, executável, acompanhado
-  de Especificação Técnica e documentação, para posterior teste por outra
-  equipe.
-- Requisitos definidos pelo autor do produto (issues e descrições fornecidas
-  ao longo do desenvolvimento no repositório GitHub `ChessMaster`).
+- The practical assignment "Software Testing Using the Black Box Method",
+  which requires building an original, executable software product,
+  accompanied by a Technical Specification and documentation, for later
+  testing by another team.
+- Requirements defined by the product owner (feature requests and
+  descriptions provided throughout development in the `ChessMaster`
+  GitHub repository).
 
-## 3. Finalidade do desenvolvimento
+## 3. Purpose of development
 
-Oferecer um jogo de xadrez completo, bonito e fácil de entender, que sirva
-tanto para jogar partidas casuais (contra outra pessoa ou contra o
-computador) quanto para aprender as regras do xadrez do zero, com suporte
-multilíngue e acompanhamento de desempenho via pontuação.
+To offer a complete, good-looking and easy-to-understand chess game, usable
+both for casual matches (against another person or against the computer)
+and to learn the rules of chess from scratch, with multi-language support,
+tournament-style clocks, and performance tracking via a scoring system.
 
-## 4. Requisitos do programa
+## 4. Requirements for the program
 
-### 4.1 Requisitos funcionais
+### 4.1 Functional requirements
 
-| # | Requisito |
-|---|-----------|
-| F1 | O sistema deve permitir uma partida local entre dois jogadores humanos no mesmo dispositivo. |
-| F2 | O sistema deve permitir uma partida contra um adversário controlado por computador. |
-| F3 | O computador deve oferecer três níveis de dificuldade: fácil, intermediário e difícil. |
-| F4 | O sistema deve validar os movimentos de acordo com as regras oficiais do xadrez (movimentos por tipo de peça, roque, en passant, promoção, xeque e xeque-mate, afogamento/empate). |
-| F5 | O sistema deve indicar visualmente o estado da partida: de quem é a vez, xeque, xeque-mate, afogamento e empate. |
-| F6 | O sistema deve oferecer um modo de treino que explique, de forma textual, a movimentação de cada peça e as regras básicas do xadrez. |
-| F7 | O sistema deve manter uma pontuação persistente entre sessões (vitórias, derrotas, empates e pontos acumulados). |
-| F8 | O sistema deve permitir trocar o idioma da interface entre Inglês, Português e Russo a qualquer momento, mantendo a preferência entre sessões. |
-| F9 | O sistema deve permitir iniciar uma nova partida, desfazer o último lance e desistir da partida atual. |
+| # | Requirement |
+|---|-------------|
+| F1 | The system must allow a local match between two human players on the same device. |
+| F2 | The system must allow a match against a computer-controlled opponent. |
+| F3 | The computer must offer three difficulty levels: easy, medium and hard. |
+| F4 | The system must validate moves according to the official rules of chess (piece-specific movement, castling, en passant, promotion, check and checkmate, stalemate/draws). |
+| F5 | The system must visually indicate match state: whose turn it is, check, checkmate, stalemate and draw. |
+| F6 | The system must let players choose a time control (3, 5 or 10 minutes per side, or no limit) before a match, and run a live per-side countdown; running out of time ends the match. |
+| F7 | The system must offer a training mode that explains, in text, how each piece moves and the basic rules of chess, including an interactive practice board where a beginner can try any piece's legal moves without turn order or stakes. |
+| F8 | The system must keep a persistent score across sessions (wins, losses, draws and accumulated points). |
+| F9 | The system must let the interface language be switched between English, Portuguese and Russian at any time, keeping the preference between sessions. |
+| F10 | The system must allow starting a new match, undoing the last move, and resigning the current match. |
 
-### 4.2 Requisitos de interface
+### 4.2 Interface requirements
 
-- Interface visual em tema escuro, com tabuleiro em tons de madeira
-  claro/escuro e peças representadas por glifos Unicode de xadrez.
-- Todos os textos da interface devem respeitar o idioma selecionado.
-- Botões de ação (Nova Partida, Desfazer, Desistir, Voltar) devem estar
-  sempre visíveis durante a partida.
-- O tabuleiro deve realçar visualmente a casa selecionada, os destinos
-  legais do lance, o último lance realizado e o rei em xeque.
-- O layout deve se adaptar a telas de celular e a navegadores desktop
-  (responsivo, largura máxima centralizada em telas grandes).
+- Dark-themed visual interface, with a light/dark wood-toned board and
+  pieces rendered as Unicode chess glyphs.
+- All interface text must respect the selected language.
+- Action buttons (New Game, Undo, Resign, Back) must always be visible
+  during a match.
+- The board must visually highlight the selected square, the move's legal
+  destinations, the last move played, and the king in check.
+- Both players' clocks must be visible during a timed match, with the
+  active side clearly highlighted and a low-time warning color.
+- The layout must adapt to phone screens and desktop browsers (responsive,
+  centered with a maximum width on large screens).
 
-### 4.3 Condições de operação
+### 4.3 Operating conditions
 
-- Aplicativo: executado via Expo Go (Android/iOS) ou build nativo gerado
-  pelo Expo, exigindo Node.js 18+ apenas para desenvolvimento.
-- Web: qualquer navegador moderno com JavaScript habilitado, sem
-  necessidade de instalação; hospedado como site estático no GitHub Pages.
-- Não há dependência de servidor/backend: toda a lógica roda no
-  dispositivo do usuário e a persistência é local (armazenamento do
-  dispositivo/navegador).
+- App: run via Expo Go (Android/iOS) or a native build generated by Expo;
+  only Node.js 18+ is required for development.
+- Web: any modern browser with JavaScript enabled, no installation
+  required; hosted as a static site on GitHub Pages.
+- No backend/server dependency: all game logic runs on the user's device,
+  and persistence (language choice and score) is local to the
+  device/browser.
 
-### 4.4 Confiabilidade
+### 4.4 Reliability
 
-- As regras do xadrez são delegadas a uma biblioteca de terceiros
-  amplamente utilizada e testada (`chess.js`), reduzindo o risco de erros
-  de lógica na validação de lances.
-- O estado da partida é mantido em memória durante a sessão; o placar é
-  persistido localmente a cada resultado de partida.
-- Falhas ao ler/gravar a preferência de idioma ou o placar não devem
-  impedir o uso do aplicativo (falha silenciosa com valores padrão).
+- Chess rules are delegated to a widely used and well-tested third-party
+  library (`chess.js`), reducing the risk of move-validation logic errors.
+- Match state is kept in memory during the session; the score is persisted
+  locally after every match result.
+- Failures reading/writing the language preference or the score must not
+  prevent using the app (silent failure with default values).
 
-### 4.5 Compatibilidade
+### 4.5 Compatibility
 
-- Compatível com Expo SDK 57 (React Native 0.86, React 19).
-- Compatível com os principais navegadores desktop e mobile via
-  React Native Web.
-- Sem dependência de recursos nativos exclusivos de uma plataforma
-  (câmera, sensores, etc.), o que preserva a paridade entre app e web.
+- Compatible with Expo SDK 57 (React Native 0.86, React 19).
+- Compatible with major desktop and mobile browsers via React Native Web.
+- No dependency on platform-exclusive native features (camera, sensors,
+  etc.), which keeps the app and web versions at feature parity.
 
-## 5. Critérios de aceitação
+## 5. Acceptance criteria
 
-- 100% dos movimentos legais e ilegais testados respeitam as regras
-  oficiais do xadrez (validados pela biblioteca de regras).
-- É possível concluir uma partida completa (do início ao xeque-mate,
-  afogamento ou empate) nos três modos: dois jogadores, computador fácil e
-  computador difícil.
-- A troca de idioma reflete corretamente em 100% dos textos visíveis nas
-  telas de início, jogo e treino.
-- O site publicado no GitHub Pages carrega e é jogável sem erros de
-  console em um navegador atualizado.
-- A pontuação exibida na tela inicial é corretamente atualizada e mantida
-  após fechar e reabrir o aplicativo/site.
+- 100% of legal and illegal moves tested respect the official rules of
+  chess (validated by the rules library).
+- A complete match (from start to checkmate, stalemate, draw, or timeout)
+  can be finished in all modes: two players, computer easy, and computer
+  hard.
+- A clock reaching zero correctly ends the match with the right side
+  losing, in both local and computer matches.
+- Switching language correctly updates 100% of the visible text on the
+  home, game, and training screens.
+- The site published on GitHub Pages loads and is playable with no console
+  errors in an up-to-date browser.
+- The score shown on the home screen updates correctly and persists after
+  closing and reopening the app/site.
 
-## 6. Requisitos de documentação
+## 6. Documentation requirements
 
-Junto ao produto devem ser entregues:
+Delivered alongside the product:
 
-- Este documento (Especificação Técnica).
-- Manual do usuário (`docs/USER_MANUAL.md`).
-- Descrição da arquitetura do sistema com diagramas (`docs/ARCHITECTURE.md`).
-- Descrição dos erros intencionalmente inseridos no software, para fins do
-  exercício de teste caixa preta (`docs/INTENTIONAL_BUGS.md`).
-- Regras do jogo e termos de uso do software (`docs/RULES_AND_TERMS.md`).
-- `README.md` descrevendo como instalar, rodar e testar o projeto.
+- This document (Technical Specification).
+- User manual (`docs/USER_MANUAL.md`).
+- System architecture description with diagrams (`docs/ARCHITECTURE.md`).
+- Description of the bugs intentionally seeded in the software, for the
+  black-box testing exercise (`docs/INTENTIONAL_BUGS.md`).
+- Game rules and software terms of use (`docs/RULES_AND_TERMS.md`).
+- `README.md` describing how to install, run and test the project.
 
-## 7. Procedimento de controle e aceitação
+## 7. Control and acceptance procedure
 
-- Cada funcionalidade é implementada e verificada isoladamente antes de ser
-  integrada (checagem de tipos com `tsc --noEmit`, build de exportação web
-  e testes manuais/automatizados de fumaça em navegador).
-- Cada etapa do desenvolvimento corresponde a um commit próprio no
-  repositório Git, com mensagem descrevendo o que foi adicionado ou
-  alterado, permitindo rastrear a evolução do produto.
-- O teste do tipo "caixa preta" por outra equipe deve seguir o roteiro do
-  Manual do Usuário e tentar reproduzir os critérios de aceitação acima,
-  reportando qualquer divergência encontrada.
+- Each feature is implemented and verified in isolation before being
+  integrated (type checking with `tsc --noEmit`, a web export build, and
+  manual/automated browser smoke tests).
+- Each development stage corresponds to its own commit in the Git
+  repository, with a message describing what was added or changed, making
+  it possible to trace the product's evolution.
+- Black-box testing by another team should follow the User Manual's
+  walkthrough and attempt to reproduce the acceptance criteria above,
+  reporting any discrepancy found.
 
-## 8. Etapas e prazos de desenvolvimento
+## 8. Development stages and timeline
 
-| Etapa | Entregável | Status |
-|-------|------------|--------|
-| 1 | Estrutura do projeto (Expo + Web + GitHub Pages) | Concluído |
-| 2 | Tabuleiro, regras de xadrez e partida local (2 jogadores) | Concluído |
-| 3 | Adversário controlado por computador com 3 dificuldades | Concluído |
-| 4 | Internacionalização (EN/PT/RU) e troca de idioma | Concluído |
-| 5 | Modo de treino com regras e movimentação das peças | Concluído |
-| 6 | Sistema de pontuação persistente | Concluído |
-| 7 | Documentação técnica e de usuário completa | Em andamento |
-| 8 | Inserção e documentação de erros intencionais (exercício caixa preta) | Concluído |
-| 9 | Publicação contínua da versão web no GitHub Pages | Concluído (workflow automatizado) |
+| Stage | Deliverable | Status |
+|-------|-------------|--------|
+| 1 | Project scaffold (Expo + Web + GitHub Pages) | Done |
+| 2 | Board, chess rules and local match (2 players) | Done |
+| 3 | Computer-controlled opponent with 3 difficulty levels | Done |
+| 4 | Internationalization (EN/PT/RU) and language switching | Done |
+| 5 | Training mode with rules and piece movement guide | Done |
+| 6 | Persistent scoring system | Done |
+| 7 | Full technical and user documentation | Done |
+| 8 | Seeding and documenting intentional bugs (black-box exercise) | Done |
+| 9 | Continuous deployment of the web version to GitHub Pages | Done (automated workflow) |
+| 10 | Chess clocks with selectable time control | Done |
+| 11 | Interactive practice board in Training mode | Done |
+| 12 | Publishing the live web build and enabling GitHub Pages | Pending (requires a one-time repository setting) |
 
-Os prazos seguem o ritmo das solicitações do responsável pelo produto,
-registradas como commits/etapas sucessivas neste repositório.
+Timelines follow the pace of the requests made by the person responsible
+for the product, recorded as successive commits/stages in this
+repository.

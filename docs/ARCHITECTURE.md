@@ -1,23 +1,24 @@
-# Arquitetura do Sistema — ChessMaster
+# System Architecture — ChessMaster
 
-## 1. Visão geral
+## 1. Overview
 
-ChessMaster é uma aplicação **React Native + React Native Web**, gerenciada
-pelo Expo, com uma única base de código compilada para dois alvos:
+ChessMaster is a **React Native + React Native Web** application, managed
+by Expo, with a single codebase compiled for two targets:
 
-- **App móvel**, executado no Expo Go (ou em um build nativo).
-- **Site web estático**, exportado com `expo export --platform web` e
-  publicado no GitHub Pages via GitHub Actions.
+- A **mobile app**, run through Expo Go (or a native build).
+- A **static website**, exported with `expo export --platform web` and
+  published on GitHub Pages through GitHub Actions.
 
-Não há backend: toda a lógica de jogo roda no cliente e a persistência
-(idioma escolhido e pontuação) usa armazenamento local do dispositivo ou do
-navegador, através do `@react-native-async-storage/async-storage`.
+There is no backend: all game logic runs on the client, and persistence
+(chosen language and score) uses the device's or browser's local storage,
+through `@react-native-async-storage/async-storage`.
 
-## 2. Diagrama de componentes
+## 2. Component diagram
 
 ```mermaid
 flowchart TD
     App["App.tsx (Navigator)"] --> Home[HomeScreen]
+    App --> TimeCtl[TimeControlScreen]
     App --> Diff[DifficultyScreen]
     App --> Game[GameScreen]
     App --> Train[TrainingScreen]
@@ -31,12 +32,18 @@ flowchart TD
     Score --> App
 
     Game --> Board[Board component]
+    Game --> Clock[Clock component]
     Game --> Engine["AI engine (minimax)"]
     Game --> ChessJS["chess.js (rules engine)"]
     Game --> ScoringUtil["scoring.ts"]
 
+    Train --> Practice[PracticeBoard component]
+    Practice --> Board
+    Practice --> ChessJS
+
     Home --> LangSwitch[LanguageSwitcher]
     Home --> Btn[Button]
+    TimeCtl --> Btn
     Diff --> Btn
     Game --> Btn
     Train --> Btn
@@ -45,90 +52,102 @@ flowchart TD
     Score -. persists .-> Storage
 ```
 
-## 3. Fluxo de uma partida contra o computador
+## 3. Flow of a match against the computer
 
 ```mermaid
 sequenceDiagram
-    participant U as Usuário
+    participant U as Player
     participant UI as GameScreen
     participant C as chess.js (Chess)
     participant AI as AI engine
 
-    U->>UI: toca numa peça (seleção)
+    U->>UI: taps a piece (selection)
     UI->>C: moves({square, verbose:true})
-    C-->>UI: lances legais
-    U->>UI: toca numa casa de destino
+    C-->>UI: legal moves
+    U->>UI: taps a destination square
     UI->>C: move({from, to, promotion})
-    C-->>UI: lance aplicado / capturada
-    UI->>UI: atualiza placar de capturas
-    alt jogo não terminou e é a vez do computador
+    C-->>UI: move applied / capture
+    UI->>UI: updates the capture tally
+    alt game not over and it's the computer's turn
         UI->>AI: pickComputerMove(game, difficulty)
-        AI->>C: simula lances (minimax + alpha-beta)
-        AI-->>UI: melhor lance encontrado
-        UI->>C: move(lance da IA)
+        AI->>C: simulates moves (minimax + alpha-beta)
+        AI-->>UI: best move found
+        UI->>C: move(AI's move)
     end
-    UI->>UI: recalcula status (xeque/xeque-mate/empate)
-    opt partida terminou
-        UI->>Score: recordResult(resultado, pontos)
+    UI->>UI: recomputes status (check/checkmate/draw/time out)
+    opt match ended
+        UI->>Score: recordResult(result, points)
     end
 ```
 
-## 4. Módulos principais
+## 4. Main modules
 
-| Módulo | Responsabilidade |
-|--------|-------------------|
-| `src/i18n` | Dicionários de tradução (EN/PT/RU) e contexto de idioma persistido. |
-| `src/chess/pieceValues.ts` | Valores de material das peças, compartilhados entre IA e pontuação. |
-| `src/chess/glyphs.ts` | Glifos Unicode usados para desenhar as peças. |
-| `src/chess/scoring.ts` | Cálculo de pontos ganhos ao final de uma partida. |
-| `src/ai/engine.ts` | Algoritmo minimax com poda alfa-beta e três níveis de dificuldade. |
-| `src/context/ScoreContext.tsx` | Estado global do placar, persistido via AsyncStorage. |
-| `src/components/Board.tsx` | Renderização do tabuleiro 8x8 e interação de toque. |
-| `src/components/Button.tsx`, `LanguageSwitcher.tsx` | Componentes de UI reutilizáveis. |
-| `src/screens/*` | Telas: início, escolha de dificuldade, partida e treino. |
-| `App.tsx` | Provedores globais (idioma, placar) e navegação simples baseada em estado. |
+| Module | Responsibility |
+|--------|-----------------|
+| `src/i18n` | Translation dictionaries (EN/PT/RU) and the persisted language context. |
+| `src/chess/pieceValues.ts` | Piece material values, shared by the AI and the scoring logic. |
+| `src/chess/glyphs.ts` | Unicode glyphs used to draw the pieces. |
+| `src/chess/scoring.ts` | Points-earned calculation at the end of a match. |
+| `src/ai/engine.ts` | Minimax algorithm with alpha-beta pruning and three difficulty levels. |
+| `src/context/ScoreContext.tsx` | Global score state, persisted via AsyncStorage. |
+| `src/components/Board.tsx` | Renders the 8x8 board and handles tap interaction. |
+| `src/components/Clock.tsx` | Renders one player's remaining time, highlighting the active side. |
+| `src/components/PracticeBoard.tsx` | Stakes-free board for Training mode; lets either color be selected out of turn via `chess.js`'s `setTurn()`. |
+| `src/components/Button.tsx`, `LanguageSwitcher.tsx` | Reusable UI components. |
+| `src/screens/*` | Screens: home, time control, difficulty picker, match, training. |
+| `App.tsx` | Global providers (language, score) and simple state-based navigation. |
 
-## 5. Motor de regras e motor de IA
+## 5. Rules engine and AI engine
 
-- **Regras do jogo**: delegadas à biblioteca `chess.js`, responsável por
-  geração de lances legais, detecção de xeque/xeque-mate/afogamento/empate,
-  roque, *en passant* e promoção.
-- **Inteligência artificial**: implementada em `src/ai/engine.ts` com um
-  algoritmo minimax com poda alfa-beta, ordenação de lances priorizando
-  capturas, e avaliação de tabuleiro por valor de material.
-  - **Fácil**: alta chance de jogar um lance aleatório, com profundidade de
-    busca rasa quando joga "a sério".
-  - **Intermediário**: busca com profundidade 2.
-  - **Difícil**: busca com profundidade 3.
+- **Game rules**: delegated to the `chess.js` library, responsible for
+  legal move generation, check/checkmate/stalemate/draw detection,
+  castling, en passant and promotion.
+- **Artificial intelligence**: implemented in `src/ai/engine.ts` with a
+  minimax algorithm with alpha-beta pruning, move ordering that
+  prioritizes captures, and board evaluation by material value.
+  - **Easy**: high chance of playing a random move, with a shallow search
+    depth when it does "play seriously".
+  - **Medium**: search at depth 2.
+  - **Hard**: search at depth 3.
 
-## 6. Publicação web (GitHub Pages)
+## 6. Chess clocks
+
+Each match can be started with a time control (3, 5 or 10 minutes per
+side, or no limit), chosen on `TimeControlScreen` before the match begins.
+`GameScreen` keeps each side's remaining time in state and decrements the
+active side's clock based on elapsed wall-clock time (not a fixed tick),
+so it stays accurate even if the JS timer is throttled. When a clock
+reaches zero, the match ends immediately as a timeout, scored the same way
+a checkmate result would be.
+
+## 7. Web publishing (GitHub Pages)
 
 ```mermaid
 flowchart LR
-    Commit[Push na branch main] --> CI[GitHub Actions: deploy-web.yml]
+    Commit[Push to the main branch] --> CI[GitHub Actions: deploy-web.yml]
     CI --> Build["npm run build:web (expo export)"]
-    Build --> Artifact[dist/ estático]
+    Build --> Artifact[static dist/]
     Artifact --> Pages[GitHub Pages]
 ```
 
-O `app.json` define `experiments.baseUrl: "/ChessMaster"`, garantindo que
-os caminhos dos assets funcionem corretamente quando o site é servido a
-partir de `https://<usuário>.github.io/ChessMaster/` (site de projeto, não
-de organização).
+`app.json` sets `experiments.baseUrl: "/ChessMaster"`, ensuring asset paths
+resolve correctly when the site is served from
+`https://<username>.github.io/ChessMaster/` (a project site, not an
+organization/user site).
 
-## 7. Estrutura de pastas
+## 8. Folder structure
 
 ```
 ChessMaster/
-├── App.tsx                # Ponto de entrada e navegação
+├── App.tsx                 # Entry point and navigation
 ├── src/
-│   ├── ai/                # Motor de IA (minimax)
-│   ├── chess/              # Utilidades de xadrez (valores, glifos, pontuação)
-│   ├── components/         # Componentes de UI reutilizáveis
-│   ├── context/            # Contexto de pontuação
-│   ├── i18n/                # Traduções e contexto de idioma
-│   ├── screens/             # Telas do aplicativo
-│   └── theme/               # Paleta de cores
-├── docs/                   # Documentação do produto (este conjunto de arquivos)
-└── .github/workflows/       # Automação de build/deploy do site
+│   ├── ai/                 # AI engine (minimax)
+│   ├── chess/               # Chess utilities (values, glyphs, scoring)
+│   ├── components/          # Reusable UI components
+│   ├── context/              # Score context
+│   ├── i18n/                  # Translations and language context
+│   ├── screens/               # App screens
+│   └── theme/                  # Color palette
+├── docs/                    # Product documentation (this file set)
+└── .github/workflows/        # Web build/deploy automation
 ```
