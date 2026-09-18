@@ -4,6 +4,11 @@ A cross-platform chess game built with Expo (React Native + React Native
 Web): the same codebase runs as an app on **Expo Go** and as a **website**
 published on GitHub Pages.
 
+## 🎮 Play now
+
+**[kenyaragao.github.io/ChessMaster](https://kenyaragao.github.io/ChessMaster/)**
+— no install required, playable directly in the browser.
+
 ## Features
 
 - ♟️ Full chess rules (castling, en passant, promotion, check, checkmate,
@@ -46,10 +51,8 @@ npm run build:web
 
 This generates static files in `dist/`. Deployment to GitHub Pages is
 automated by the [`.github/workflows/deploy-web.yml`](.github/workflows/deploy-web.yml)
-workflow on every push to `main` (this requires enabling **Settings → Pages
-→ Source: GitHub Actions** once, from the repository settings). Once
-enabled, the game is available at
-`https://<username>.github.io/ChessMaster/`.
+workflow on every push to `main`, publishing to
+**https://kenyaragao.github.io/ChessMaster/**.
 
 ## Product documentation
 
