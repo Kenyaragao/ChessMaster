@@ -57,6 +57,14 @@ export interface Translations {
   piece_king: string;
   piece_king_move: string;
   home: string;
+  chooseTimeControl: string;
+  noTimeLimit: string;
+  timeOut: string;
+  white: string;
+  black: string;
+  practiceTitle: string;
+  practiceHint: string;
+  resetBoard: string;
 }
 
 export const translations: Record<Language, Translations> = {
@@ -120,6 +128,15 @@ export const translations: Record<Language, Translations> = {
     piece_king: 'King',
     piece_king_move: 'Moves one square in any direction.',
     home: 'Home',
+    chooseTimeControl: 'Choose a time control',
+    noTimeLimit: 'No limit',
+    timeOut: 'Time out',
+    white: 'White',
+    black: 'Black',
+    practiceTitle: 'Practice board',
+    practiceHint:
+      'Tap any piece, of either color, to see where it can legally move. Use this board to experiment freely — there are no turns to wait for and no result is recorded.',
+    resetBoard: 'Reset board',
   },
   pt: {
     appName: 'ChessMaster',
@@ -181,6 +198,15 @@ export const translations: Record<Language, Translations> = {
     piece_king: 'Rei',
     piece_king_move: 'Move uma casa em qualquer direção.',
     home: 'Início',
+    chooseTimeControl: 'Escolha um tempo de jogo',
+    noTimeLimit: 'Sem limite',
+    timeOut: 'Tempo esgotado',
+    white: 'Brancas',
+    black: 'Pretas',
+    practiceTitle: 'Tabuleiro de prática',
+    practiceHint:
+      'Toque em qualquer peça, de qualquer cor, para ver para onde ela pode se mover legalmente. Use este tabuleiro para experimentar livremente — não há turnos para esperar e nenhum resultado é registrado.',
+    resetBoard: 'Reiniciar tabuleiro',
   },
   ru: {
     appName: 'ChessMaster',
@@ -242,5 +268,14 @@ export const translations: Record<Language, Translations> = {
     piece_king: 'Король',
     piece_king_move: 'Ходит на одну клетку в любом направлении.',
     home: 'Главная',
+    chooseTimeControl: 'Выберите контроль времени',
+    noTimeLimit: 'Без лимита',
+    timeOut: 'Время истекло',
+    white: 'Белые',
+    black: 'Чёрные',
+    practiceTitle: 'Тренировочная доска',
+    practiceHint:
+      'Коснитесь любой фигуры, любого цвета, чтобы увидеть, куда она может законно пойти. Используйте эту доску, чтобы экспериментировать свободно — здесь нет очередности ходов и результат не сохраняется.',
+    resetBoard: 'Сбросить доску',
   },
 };

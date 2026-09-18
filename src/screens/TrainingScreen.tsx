@@ -2,6 +2,7 @@ import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import type { PieceSymbol } from 'chess.js';
 import { Button } from '../components/Button';
+import { PracticeBoard } from '../components/PracticeBoard';
 import { PIECE_GLYPHS } from '../chess/glyphs';
 import { useI18n } from '../i18n/I18nContext';
 import { colors } from '../theme/colors';
@@ -40,6 +41,8 @@ export function TrainingScreen({ onBack }: TrainingScreenProps) {
           </View>
         </View>
       ))}
+
+      <PracticeBoard />
 
       <Text style={styles.sectionTitle}>{t.basicRules}</Text>
       {rules.map((rule, index) => (
