@@ -17,12 +17,21 @@ how to detect it (execution conditions / test steps).
 - **Type:** Logic.
 - **Description:** When updating the `alpha` bound after evaluating a
   move, the code uses `Math.min(alpha, best)` instead of
-  `Math.max(alpha, best)`. This breaks alpha-beta pruning and makes the
-  AI, especially at "Hard" difficulty (deeper search), pick clearly bad
-  moves (blunders) even when obviously better alternatives exist.
+  `Math.max(alpha, best)`. This breaks alpha-beta pruning, so the search
+  barely prunes any branch and explores close to the full game tree
+  instead. Besides making the AI, especially at "Hard" difficulty (deeper
+  search), pick clearly bad moves (blunders) even when obviously better
+  alternatives exist, the extra nodes searched also make each computer
+  move noticeably slow (multiple seconds measured in testing at "Hard",
+  even in a desktop browser) — on a phone through Expo Go this can look
+  like the app freezing for several seconds while it's the computer's
+  turn, since the search runs synchronously on the main thread.
 - **Detection:** Play several matches against the computer at "Hard"
   difficulty and check whether it leaves important pieces (queen, rook)
-  undefended in simple positions, or plays worse than at "Medium".
+  undefended in simple positions, or plays worse than at "Medium". Also
+  time how long the computer takes to reply after an opening move (e.g.
+  1.e4) — a noticeable multi-second delay/freeze is this same bug, not a
+  separate one.
 
 ## BUG-02 — A draw is counted as both a draw and a win
 
