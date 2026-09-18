@@ -145,7 +145,8 @@ Delivered alongside the product:
 | 9 | Continuous deployment of the web version to GitHub Pages | Done (automated workflow) |
 | 10 | Chess clocks with selectable time control | Done |
 | 11 | Interactive practice board in Training mode | Done |
-| 12 | Publishing the live web build and enabling GitHub Pages | Pending (requires a one-time repository setting) |
+| 12 | Bordered board with algebraic coordinates and 5 selectable color themes | Done |
+| 13 | Publishing the live web build and enabling GitHub Pages | Pending (requires a one-time repository setting) |
 
 Timelines follow the pace of the requests made by the person responsible
 for the product, recorded as successive commits/stages in this

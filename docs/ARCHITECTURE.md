@@ -90,7 +90,9 @@ sequenceDiagram
 | `src/chess/scoring.ts` | Points-earned calculation at the end of a match. |
 | `src/ai/engine.ts` | Minimax algorithm with alpha-beta pruning and three difficulty levels. |
 | `src/context/ScoreContext.tsx` | Global score state, persisted via AsyncStorage. |
-| `src/components/Board.tsx` | Renders the 8x8 board and handles tap interaction. |
+| `src/theme/boardThemes.ts`, `src/context/ThemeContext.tsx` | Board color theme definitions and the persisted theme context. |
+| `src/components/Board.tsx` | Renders the bordered 8x8 board with algebraic coordinates, themed colors, and handles tap interaction. |
+| `src/components/ThemeSwitcher.tsx` | Two-tone swatch picker for the board theme. |
 | `src/components/Clock.tsx` | Renders one player's remaining time, highlighting the active side. |
 | `src/components/PracticeBoard.tsx` | Stakes-free board for Training mode; lets either color be selected out of turn via `chess.js`'s `setTurn()`. |
 | `src/components/Button.tsx`, `LanguageSwitcher.tsx` | Reusable UI components. |

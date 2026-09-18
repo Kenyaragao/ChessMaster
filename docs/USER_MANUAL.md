@@ -37,6 +37,9 @@ When you open the app you'll see:
 - The game name and a **language** switcher (EN / PT / RU) at the top.
 - A **score** card showing total points, wins, losses and draws
   accumulated so far.
+- A **theme** picker: tap one of the five two-tone swatches (Classic Wood,
+  Forest, Ocean, Contrast, Midnight) to change the board's colors; your
+  choice is saved and applied to every match and to the training board.
 - Three game mode options:
   - **Play a Friend** — a local match, two players take turns on the same
     device.

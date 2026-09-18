@@ -65,6 +65,7 @@ export interface Translations {
   practiceTitle: string;
   practiceHint: string;
   resetBoard: string;
+  theme: string;
 }
 
 export const translations: Record<Language, Translations> = {
@@ -137,6 +138,7 @@ export const translations: Record<Language, Translations> = {
     practiceHint:
       'Tap any piece, of either color, to see where it can legally move. Use this board to experiment freely — there are no turns to wait for and no result is recorded.',
     resetBoard: 'Reset board',
+    theme: 'Theme',
   },
   pt: {
     appName: 'ChessMaster',
@@ -207,6 +209,7 @@ export const translations: Record<Language, Translations> = {
     practiceHint:
       'Toque em qualquer peça, de qualquer cor, para ver para onde ela pode se mover legalmente. Use este tabuleiro para experimentar livremente — não há turnos para esperar e nenhum resultado é registrado.',
     resetBoard: 'Reiniciar tabuleiro',
+    theme: 'Tema',
   },
   ru: {
     appName: 'ChessMaster',
@@ -277,5 +280,6 @@ export const translations: Record<Language, Translations> = {
     practiceHint:
       'Коснитесь любой фигуры, любого цвета, чтобы увидеть, куда она может законно пойти. Используйте эту доску, чтобы экспериментировать свободно — здесь нет очередности ходов и результат не сохраняется.',
     resetBoard: 'Сбросить доску',
+    theme: 'Тема',
   },
 };

@@ -4,6 +4,7 @@ import { Chess, Square } from 'chess.js';
 import { Board } from './Board';
 import { Button } from './Button';
 import { useI18n } from '../i18n/I18nContext';
+import { useBoardTheme } from '../context/ThemeContext';
 import { colors } from '../theme/colors';
 
 /**
@@ -14,6 +15,7 @@ import { colors } from '../theme/colors';
  */
 export function PracticeBoard() {
   const { t } = useI18n();
+  const { theme } = useBoardTheme();
   const gameRef = useRef(new Chess());
   const [, setTick] = useState(0);
   const [selected, setSelected] = useState<Square | null>(null);
@@ -73,6 +75,7 @@ export function PracticeBoard() {
       <Text style={styles.hint}>{t.practiceHint}</Text>
       <Board
         board={game.board()}
+        theme={theme}
         selectedSquare={selected}
         legalTargets={legalTargets}
         onSquarePress={handleSquarePress}

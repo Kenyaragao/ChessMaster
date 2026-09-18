@@ -22,6 +22,9 @@ published on GitHub Pages.
   with the language choice persisted between sessions.
 - 🏆 **Scoring system** per game (material captured + result bonus),
   accumulated and saved locally.
+- 🎨 **Board themes**: a bordered board with algebraic coordinates (a-h,
+  1-8) around the edges, and five selectable color themes (Classic Wood,
+  Forest, Ocean, Contrast, Midnight), persisted between sessions.
 
 ## Running the project
 
@@ -88,6 +91,9 @@ easy to follow:
    version control is written in English, so the project's history and
    docs are readable by anyone browsing the repository; the in-app UI
    keeps its three supported languages (EN/PT/RU) as a game feature.
+7. **Board themes** — a bordered board with algebraic coordinates around
+   the edges, and five selectable color themes (Classic Wood, Forest,
+   Ocean, Contrast, Midnight), persisted between sessions.
 
 Each stage above corresponds to one or more commits with a descriptive
 message — check the repository's commit history for the exact diffs.
