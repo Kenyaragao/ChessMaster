@@ -9,8 +9,12 @@ Atalhos globais (funcionam com qualquer janela em foco):
     F9  - parar a digitação
 """
 
+import faulthandler
+import os
+import queue
 import random
 import threading
+import traceback
 import time
 import tkinter as tk
 from tkinter import messagebox, ttk
@@ -19,6 +23,8 @@ try:
     from pynput import keyboard
 except ImportError:  # pragma: no cover - mensagem amigável para o usuário
     raise SystemExit("Instale a dependência primeiro:  pip install pynput")
+
+LOG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "auto_typer_erro.log")
 
 START_HOTKEY = "<f8>"
 STOP_HOTKEY = "<f9>"
@@ -30,6 +36,9 @@ class AutoTyper:
         self.kb = keyboard.Controller()
         self.stop_event = threading.Event()
         self.worker: threading.Thread | None = None
+        # O Tkinter só pode ser usado pela thread principal; as outras threads
+        # (atalhos e digitação) mandam pedidos por esta fila.
+        self.ui_queue: queue.Queue = queue.Queue()
 
         root.title("Auto Typer Pro")
         root.geometry("560x600")
@@ -88,10 +97,12 @@ class AutoTyper:
 
         # Atalhos globais (rodam em outra thread -> repassar ao Tk via after)
         self.hotkeys = keyboard.GlobalHotKeys({
-            START_HOTKEY: lambda: self.root.after(0, self.start),
-            STOP_HOTKEY: lambda: self.root.after(0, self.stop),
+            START_HOTKEY: lambda: self.ui_queue.put(self.start),
+            STOP_HOTKEY: self.stop_event.set,
         })
         self.hotkeys.start()
+        root.report_callback_exception = self.report_error
+        self.process_queue()
         root.protocol("WM_DELETE_WINDOW", self.on_close)
 
     # ------------------------------------------------------------------ ações
@@ -99,7 +110,8 @@ class AutoTyper:
         try:
             content = self.root.clipboard_get()
         except tk.TclError:
-            messagebox.showwarning("Auto Typer Pro", "A área de transferência está vazia.")
+            messagebox.showwarning("Auto Typer Pro",
+                                   "A área de transferência está vazia ou não contém texto.")
             return
         self.text.delete("1.0", "end")
         self.text.insert("1.0", content)
@@ -146,6 +158,13 @@ class AutoTyper:
             self.set_status(f"Começando em {remaining}...")
             time.sleep(1)
 
+        try:
+            self._type_chars(content, delay, humanize)
+        except Exception:
+            log_error(traceback.format_exc())
+            self.finish(f"Erro durante a digitação (veja {LOG_PATH}).")
+
+    def _type_chars(self, content: str, delay: float, humanize: bool) -> None:
         total = len(content)
         for i, char in enumerate(content, 1):
             if self.stop_event.is_set():
@@ -163,11 +182,25 @@ class AutoTyper:
         self.finish(f"Concluído! {total} caracteres digitados.")
 
     def set_status(self, msg: str) -> None:
-        self.root.after(0, self.status.set, msg)
+        self.ui_queue.put(lambda: self.status.set(msg))
 
     def finish(self, msg: str) -> None:
         self.set_status(msg)
-        self.root.after(0, lambda: self.start_btn.state(["!disabled"]))
+        self.ui_queue.put(lambda: self.start_btn.state(["!disabled"]))
+
+    # ------------------------------------------------------ thread principal (Tk)
+    def process_queue(self) -> None:
+        try:
+            while True:
+                self.ui_queue.get_nowait()()
+        except queue.Empty:
+            pass
+        self.root.after(50, self.process_queue)
+
+    def report_error(self, *exc_info) -> None:
+        text = "".join(traceback.format_exception(*exc_info))
+        log_error(text)
+        messagebox.showerror("Auto Typer Pro", f"Ocorreu um erro (salvo em {LOG_PATH}):\n\n{text}")
 
     def on_close(self) -> None:
         self.stop_event.set()
@@ -175,7 +208,15 @@ class AutoTyper:
         self.root.destroy()
 
 
+def log_error(text: str) -> None:
+    with open(LOG_PATH, "a", encoding="utf-8") as f:
+        f.write(time.strftime("[%Y-%m-%d %H:%M:%S]\n") + text + "\n")
+
+
 def main() -> None:
+    # Registra até travamentos "duros" (quando a janela fecha sem mensagem).
+    crash_log = open(LOG_PATH, "a", encoding="utf-8")
+    faulthandler.enable(crash_log)
     root = tk.Tk()
     AutoTyper(root)
     root.mainloop()
