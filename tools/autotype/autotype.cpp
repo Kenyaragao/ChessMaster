@@ -162,6 +162,10 @@ static bool ownsConsole() {
 }
 
 static void waitForEnter() {
+    // Drop anything that ended up in our own input buffer (e.g. keystrokes
+    // that landed here after the target window went away); otherwise a typed
+    // newline would satisfy the prompt and close the window immediately.
+    FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
     printf("\nPress Enter to close...");
     fflush(stdout);
     int c;
@@ -243,10 +247,20 @@ static int typeFile(const char* path) {
     raiseTimerResolution();
     GetAsyncKeyState(VK_ESCAPE); // clear the "pressed since last call" bit
 
+    // Only ever type into the window that was active when typing started.
+    // If it closes or loses focus, stop instead of typing into whatever
+    // window comes up next (often this console).
+    HWND target = GetForegroundWindow();
+
     bool aborted = false;
+    bool lostTarget = false;
     for (size_t i = 0; i < text.size(); ++i) {
         if (keyDown(VK_ESCAPE)) {
             aborted = true;
+            break;
+        }
+        if (GetForegroundWindow() != target) {
+            lostTarget = true;
             break;
         }
 
@@ -271,6 +285,10 @@ static int typeFile(const char* path) {
     if (aborted) {
         printf("Aborted.\n");
         return 2;
+    }
+    if (lostTarget) {
+        printf("Stopped: the target window closed or lost focus.\n");
+        return 3;
     }
     printf("Done!\n");
     return 0;
