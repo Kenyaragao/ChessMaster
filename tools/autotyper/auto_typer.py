@@ -75,6 +75,10 @@ else:
 
 LOG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "auto_typer_erro.log")
 
+INDENT_ADJUST = "Ajustar ao editor (evita espaços acumulados)"
+INDENT_KEEP = "Digitar exatamente como está"
+INDENT_STRIP = "Remover toda a indentação"
+
 START_HOTKEY = "<f8>"
 STOP_HOTKEY = "<f9>"
 
@@ -114,12 +118,14 @@ class AutoTyper:
         text_frame.columnconfigure(0, weight=1)
 
         # --- Opções ----------------------------------------------------------
-        self.strip_indent = tk.BooleanVar(value=False)
-        ttk.Checkbutton(
-            root,
-            text="Remover indentação (ative se o editor duplicar os espaços)",
-            variable=self.strip_indent,
-        ).pack(pady=(0, 6))
+        indent_frame = ttk.Frame(root, padding=(10, 0))
+        indent_frame.pack(fill="x", pady=(0, 6))
+        ttk.Label(indent_frame, text="Indentação:").pack(side="left")
+        self.indent_mode = tk.StringVar(value=INDENT_ADJUST)
+        ttk.Combobox(
+            indent_frame, textvariable=self.indent_mode, state="readonly", width=48,
+            values=(INDENT_ADJUST, INDENT_KEEP, INDENT_STRIP),
+        ).pack(side="left", padx=4)
 
         opts = ttk.Frame(root, padding=(10, 0))
         opts.pack(fill="x")
@@ -168,11 +174,9 @@ class AutoTyper:
     def clear(self) -> None:
         self.text.delete("1.0", "end")
 
-    def prepared_text(self) -> str:
+    def prepared_text(self) -> list:
         content = self.text.get("1.0", "end-1c").replace("\r\n", "\n")
-        if self.strip_indent.get():
-            content = "\n".join(line.lstrip(" \t") for line in content.split("\n"))
-        return content
+        return build_actions(content, self.indent_mode.get())
 
     def start(self) -> None:
         if self.worker and self.worker.is_alive():
@@ -213,12 +217,14 @@ class AutoTyper:
             log_error(traceback.format_exc())
             self.finish(f"Erro durante a digitação (veja {LOG_PATH}).")
 
-    def _type_chars(self, content: str, delay: float, humanize: bool) -> None:
+    def _type_chars(self, content: list, delay: float, humanize: bool) -> None:
         total = len(content)
         for i, char in enumerate(content, 1):
             if self.stop_event.is_set():
-                return self.finish(f"Parado em {i - 1}/{total} caracteres.")
-            if char == "\n":
+                return self.finish(f"Parado em {i - 1}/{total} teclas.")
+            if isinstance(char, keyboard.Key):
+                self.kb.tap(char)
+            elif char == "\n":
                 self.kb.tap(keyboard.Key.enter)
             elif char == "\t":
                 self.kb.tap(keyboard.Key.tab)
@@ -230,7 +236,7 @@ class AutoTyper:
                 self.set_status(f"Digitando... {i}/{total}")
             if delay:
                 time.sleep(delay * random.uniform(0.5, 1.5) if humanize else delay)
-        self.finish(f"Concluído! {total} caracteres digitados.")
+        self.finish(f"Concluído! {total} teclas enviadas.")
 
     def set_status(self, msg: str) -> None:
         self.ui_queue.put(lambda: self.status.set(msg))
@@ -257,6 +263,51 @@ class AutoTyper:
         self.stop_event.set()
         self.hotkeys.stop()
         self.root.destroy()
+
+
+def indent_level(line: str, tab_size: int = 4) -> int:
+    """Nível de indentação da linha (1 tab ou 4 espaços = 1 nível)."""
+    width = 0
+    for ch in line:
+        if ch == "\t":
+            width += tab_size - width % tab_size
+        elif ch == " ":
+            width += 1
+        else:
+            break
+    return width // tab_size
+
+
+def build_actions(content: str, mode: str) -> list:
+    """Converte o texto na sequência de teclas a enviar.
+
+    No modo "ajustar", parte do princípio de que o editor repete sozinho a
+    indentação da linha anterior ao apertar Enter: em vez de digitar a
+    indentação inteira, envia só a diferença (Tab para entrar, Backspace
+    para voltar). Assim os espaços não se acumulam.
+    """
+    lines = content.split("\n")
+    if mode == INDENT_KEEP:
+        return list(content)
+    if mode == INDENT_STRIP:
+        return list("\n".join(line.lstrip(" \t") for line in lines))
+
+    actions: list = []
+    current = 0  # indentação que o editor coloca sozinho após o Enter
+    for n, line in enumerate(lines):
+        if n:
+            actions.append("\n")
+        body = line.lstrip(" \t")
+        if not body:
+            continue  # linha vazia: mantém a indentação automática
+        target = indent_level(line)
+        if target > current:
+            actions.extend([keyboard.Key.tab] * (target - current))
+        elif target < current:
+            actions.extend([keyboard.Key.backspace] * (current - target))
+        current = target
+        actions.extend(body)
+    return actions
 
 
 def log_error(text: str) -> None:
