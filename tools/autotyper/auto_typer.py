@@ -13,6 +13,7 @@ import faulthandler
 import os
 import queue
 import random
+import sys
 import threading
 import traceback
 import time
@@ -23,6 +24,54 @@ try:
     from pynput import keyboard
 except ImportError:  # pragma: no cover - mensagem amigável para o usuário
     raise SystemExit("Instale a dependência primeiro:  pip install pynput")
+
+if sys.platform == "win32":
+    import ctypes
+    from ctypes import wintypes
+
+    _INPUT_KEYBOARD = 1
+    _KEYEVENTF_KEYUP = 0x0002
+    _KEYEVENTF_UNICODE = 0x0004
+
+    class _MOUSEINPUT(ctypes.Structure):
+        _fields_ = [("dx", wintypes.LONG), ("dy", wintypes.LONG),
+                    ("mouseData", wintypes.DWORD), ("dwFlags", wintypes.DWORD),
+                    ("time", wintypes.DWORD), ("dwExtraInfo", ctypes.c_size_t)]
+
+    class _KEYBDINPUT(ctypes.Structure):
+        _fields_ = [("wVk", wintypes.WORD), ("wScan", wintypes.WORD),
+                    ("dwFlags", wintypes.DWORD), ("time", wintypes.DWORD),
+                    ("dwExtraInfo", ctypes.c_size_t)]
+
+    class _HARDWAREINPUT(ctypes.Structure):
+        _fields_ = [("uMsg", wintypes.DWORD), ("wParamL", wintypes.WORD),
+                    ("wParamH", wintypes.WORD)]
+
+    class _INPUTUNION(ctypes.Union):
+        _fields_ = [("mi", _MOUSEINPUT), ("ki", _KEYBDINPUT), ("hi", _HARDWAREINPUT)]
+
+    class _INPUT(ctypes.Structure):
+        _fields_ = [("type", wintypes.DWORD), ("u", _INPUTUNION)]
+
+    _SendInput = ctypes.windll.user32.SendInput
+    _SendInput.argtypes = (wintypes.UINT, ctypes.POINTER(_INPUT), ctypes.c_int)
+    _SendInput.restype = wintypes.UINT
+
+    def send_unicode_char(char: str) -> None:
+        """Envia o caractere como Unicode, independente do layout do teclado
+        (evita símbolos trocados/perdidos como < > # em teclados ABNT2/russo)."""
+        data = char.encode("utf-16-le")
+        units = [int.from_bytes(data[i:i + 2], "little") for i in range(0, len(data), 2)]
+        inputs = []
+        for unit in units:
+            for flags in (_KEYEVENTF_UNICODE, _KEYEVENTF_UNICODE | _KEYEVENTF_KEYUP):
+                inp = _INPUT(type=_INPUT_KEYBOARD)
+                inp.u.ki = _KEYBDINPUT(0, unit, flags, 0, 0)
+                inputs.append(inp)
+        array = (_INPUT * len(inputs))(*inputs)
+        _SendInput(len(inputs), array, ctypes.sizeof(_INPUT))
+else:
+    send_unicode_char = None
 
 LOG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "auto_typer_erro.log")
 
@@ -173,6 +222,8 @@ class AutoTyper:
                 self.kb.tap(keyboard.Key.enter)
             elif char == "\t":
                 self.kb.tap(keyboard.Key.tab)
+            elif send_unicode_char is not None:
+                send_unicode_char(char)
             else:
                 self.kb.type(char)
             if i % 20 == 0:
