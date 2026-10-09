@@ -153,26 +153,76 @@ static bool keyDown(int vk) {
     return (GetAsyncKeyState(vk) & 0x8000) != 0;
 }
 
+// True when this process owns its console window, i.e. it was started by
+// double-clicking (or drag-and-drop in Explorer) rather than from cmd/PowerShell.
+// In that case the window would vanish as soon as we exit.
+static bool ownsConsole() {
+    DWORD pids[2];
+    return GetConsoleProcessList(pids, 2) <= 1;
+}
+
+static void waitForEnter() {
+    printf("\nPress Enter to close...");
+    fflush(stdout);
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF) {}
+}
+
+static void printUsage() {
+    printf("autotype - types a file into the active window using real keystrokes\n\n");
+    printf("Usage:   autotype.exe <filename>\n");
+    printf("Example: autotype.exe cl_base.cpp\n");
+    printf("         (or drag a file onto autotype.exe)\n\n");
+    printf("After starting, you have %d seconds to click into the target editor.\n",
+           COUNTDOWN_SECONDS);
+    printf("Tabs are sent as Tab key presses, newlines as Enter.\n");
+    printf("Press ESC while typing to abort.\n\n");
+}
+
+// Ask for a file path on the console. Paths dragged into the console window
+// arrive wrapped in quotes, so strip those and surrounding whitespace.
+static std::string promptForPath() {
+    printf("File to type (drag it here or type the path), then press Enter:\n> ");
+    fflush(stdout);
+    char line[MAX_PATH * 2];
+    if (!fgets(line, sizeof(line), stdin)) return std::string();
+    std::string path = line;
+    while (!path.empty() && (path[path.size() - 1] == '\n' || path[path.size() - 1] == '\r' ||
+                             path[path.size() - 1] == ' ' || path[path.size() - 1] == '"')) {
+        path.erase(path.size() - 1);
+    }
+    while (!path.empty() && (path[0] == ' ' || path[0] == '"')) path.erase(0, 1);
+    return path;
+}
+
+static int typeFile(const char* path);
+
 int main(int argc, char* argv[]) {
-    if (argc < 2) {
-        printf("autotype - types a file into the active window using real keystrokes\n\n");
-        printf("Usage:   autotype.exe <filename>\n");
-        printf("Example: autotype.exe cl_base.cpp\n\n");
-        printf("After starting, you have %d seconds to click into the target editor.\n",
-               COUNTDOWN_SECONDS);
-        printf("Tabs are sent as Tab key presses, newlines as Enter.\n");
-        printf("Press ESC while typing to abort.\n");
-        return 1;
+    bool interactive = ownsConsole();
+    int result;
+
+    if (argc >= 2) {
+        result = typeFile(argv[1]);
+    } else {
+        printUsage();
+        std::string path;
+        if (interactive) path = promptForPath();
+        result = path.empty() ? 1 : typeFile(path.c_str());
     }
 
+    if (interactive) waitForEnter();
+    return result;
+}
+
+static int typeFile(const char* path) {
     std::string bytes;
-    if (!readFile(argv[1], bytes)) {
-        fprintf(stderr, "Error: cannot open file '%s'\n", argv[1]);
+    if (!readFile(path, bytes)) {
+        fprintf(stderr, "Error: cannot open file '%s'\n", path);
         return 1;
     }
     std::wstring text = decodeText(bytes);
 
-    printf("Loaded '%s' (%u characters).\n", argv[1], (unsigned)text.size());
+    printf("Loaded '%s' (%u characters).\n", path, (unsigned)text.size());
     printf("Click on the target editor window now. Press ESC while typing to abort.\n");
     for (int i = COUNTDOWN_SECONDS; i > 0; --i) {
         printf("Starting in %d...\n", i);

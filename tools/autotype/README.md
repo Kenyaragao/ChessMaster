@@ -8,6 +8,10 @@ g++ -o autotype.exe autotype.cpp -static
 autotype.exe cl_base.cpp
 ```
 
+Or just drag a file onto `autotype.exe`, or double-click it and drag/type the file
+path into the window when asked. When started from Explorer the window stays open
+until you press Enter.
+
 - 5-second countdown to click into the target editor, then types the file.
 - `\t` → Tab key, `\n` → Enter key, `\r` is skipped.
 - Other characters are sent as real key presses when the keyboard layout has them
