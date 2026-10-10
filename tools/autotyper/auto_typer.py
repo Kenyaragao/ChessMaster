@@ -93,7 +93,7 @@ class AutoTyper:
         # (atalhos e digitação) mandam pedidos por esta fila.
         self.ui_queue: queue.Queue = queue.Queue()
 
-        root.title("Auto Typer Pro")
+        root.title("Auto Typer Pro v4 (indentação ajustada)")
         root.geometry("560x600")
         root.minsize(420, 420)
 
