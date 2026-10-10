@@ -93,7 +93,7 @@ class AutoTyper:
         # (atalhos e digitação) mandam pedidos por esta fila.
         self.ui_queue: queue.Queue = queue.Queue()
 
-        root.title("Auto Typer Pro v4 (indentação ajustada)")
+        root.title("Auto Typer Pro v5 (Tab real)")
         root.geometry("560x600")
         root.minsize(420, 420)
 
@@ -226,9 +226,11 @@ class AutoTyper:
                 self.kb.tap(char)
             elif char == "\n":
                 self.kb.tap(keyboard.Key.enter)
-            elif char == "\t":
+            elif char == "\t" and send_unicode_char is None:
                 self.kb.tap(keyboard.Key.tab)
             elif send_unicode_char is not None:
+                # No Windows o Tab vai como caractere, não como tecla: editores
+                # que trocam a tecla Tab por espaços recebem um Tab de verdade.
                 send_unicode_char(char)
             else:
                 self.kb.type(char)
@@ -302,7 +304,7 @@ def build_actions(content: str, mode: str) -> list:
             continue  # linha vazia: mantém a indentação automática
         target = indent_level(line)
         if target > current:
-            actions.extend([keyboard.Key.tab] * (target - current))
+            actions.extend(["\t"] * (target - current))
         elif target < current:
             actions.extend([keyboard.Key.backspace] * (current - target))
         current = target
